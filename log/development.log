@@ -1,0 +1,2364 @@
+  [1m[36m (78.4ms)[0m  [1mCREATE TABLE "schema_migrations" ("version" varchar(255) NOT NULL) [0m
+  [1m[35m (0.2ms)[0m  select sqlite_version(*)
+  [1m[36m (74.1ms)[0m  [1mCREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.2ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+Migrating to CreateProducts (20141125203934)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.6ms)[0m  CREATE TABLE "products" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar(255), "description" text, "image_url" varchar(255), "price" decimal(8,2), "created_at" datetime, "updated_at" datetime) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20141125203934"]]
+  [1m[35m (69.5ms)[0m  commit transaction
+Migrating to CreateCarts (20150227202836)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  CREATE TABLE "carts" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime, "updated_at" datetime) 
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150227202836"]]
+  [1m[35m (73.0ms)[0m  commit transaction
+Migrating to CreateLineItems (20150316085956)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.4ms)[0m  CREATE TABLE "line_items" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "product_id" integer, "cart_id" integer, "created_at" datetime, "updated_at" datetime) 
+  [1m[36m (0.2ms)[0m  [1mCREATE  INDEX "index_line_items_on_product_id" ON "line_items" ("product_id")[0m
+  [1m[35m (0.3ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+
+  [1m[36m (0.2ms)[0m  [1mCREATE  INDEX "index_line_items_on_cart_id" ON "line_items" ("cart_id")[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150316085956"]]
+  [1m[36m (87.6ms)[0m  [1mcommit transaction[0m
+Migrating to AddQuantityToLineItems (20150320194939)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.6ms)[0m  [1mALTER TABLE "line_items" ADD "quantity" integer DEFAULT 1[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150320194939"]]
+  [1m[36m (56.8ms)[0m  [1mcommit transaction[0m
+Migrating to CombineItemsInCart (20150320195822)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36mCart Load (0.1ms)[0m  [1mSELECT "carts".* FROM "carts"[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150320195822"]]
+  [1m[36m (46.7ms)[0m  [1mcommit transaction[0m
+Migrating to CreateOrders (20150712172558)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "orders" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255), "address" text, "email" varchar(255), "pay_type" varchar(255), "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150712172558"]]
+  [1m[36m (72.3ms)[0m  [1mcommit transaction[0m
+Migrating to AddOrderToLineItem (20150712172629)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.4ms)[0m  [1mALTER TABLE "line_items" ADD "order_id" integer[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m  CREATE  INDEX "index_line_items_on_order_id" ON "line_items" ("order_id")
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20150712172629"]]
+  [1m[35m (80.5ms)[0m  commit transaction
+Migrating to AddProductPriceToLineItem (20150715202905)
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35m (0.4ms)[0m  ALTER TABLE "line_items" ADD "price" decimal(8,2)
+  [1m[36mLineItem Load (0.1ms)[0m  [1mSELECT "line_items".* FROM "line_items"[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150715202905"]]
+  [1m[36m (57.3ms)[0m  [1mcommit transaction[0m
+Migrating to CreateUsers (20150907185541)
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36m (0.3ms)[0m  [1mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255), "password_digest" varchar(255), "created_at" datetime, "updated_at" datetime) [0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES (?)  [["version", "20150907185541"]]
+  [1m[36m (75.1ms)[0m  [1mcommit transaction[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.2ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.2ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+[0m
+  [1m[35m (0.2ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+
+  [1m[36m (0.2ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+[0m
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-09 17:12:57 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by StoreController#index as HTML
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "carts" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2018-05-09 10:12:57.723018"], ["updated_at", "2018-05-09 10:12:57.723018"]]
+  [1m[35m (60.1ms)[0m  commit transaction
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (2.3ms)
+Completed 500 Internal Server Error in 205ms
+
+ActionView::Template::Error (couldn't find file 'jquery-ui/effect-blind'
+  (in /home/phipn/Documents/book-rails4/app/assets/javascripts/application.js:14)):
+    3: <head>
+    4:   <title>Pragprog Books Online Store</title>
+    5:   <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body class="<%= controller.controller_name %>">
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb__1271168204779832287_70239394199360'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (0.9ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (1.1ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (9.4ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-09 17:14:25 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by StoreController#index as HTML
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "carts" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2018-05-09 10:14:25.295388"], ["updated_at", "2018-05-09 10:14:25.295388"]]
+  [1m[35m (53.8ms)[0m  commit transaction
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (2.9ms)
+Completed 500 Internal Server Error in 131ms
+
+ActionView::Template::Error (couldn't find file 'jquery-ui/effect-blind'
+  (in /home/phipn/Documents/book-rails4/app/assets/javascripts/application.js:14)):
+    3: <head>
+    4:   <title>Pragprog Books Online Store</title>
+    5:   <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body class="<%= controller.controller_name %>">
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___1619868541617309836_70269293157620'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.3ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (1.0ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (9.7ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-09 17:14:26 +0700
+Processing by StoreController#index as HTML
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "carts" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2018-05-09 10:14:26.498069"], ["updated_at", "2018-05-09 10:14:26.498069"]]
+  [1m[36m (54.5ms)[0m  [1mcommit transaction[0m
+  [1m[35mProduct Load (0.3ms)[0m  SELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1
+  [1m[36mProduct Load (0.1ms)[0m  [1mSELECT "products".* FROM "products"   ORDER BY "products"."title" ASC[0m
+  Rendered store/index.html.erb within layouts/application (1.3ms)
+Completed 500 Internal Server Error in 106ms
+
+ActionView::Template::Error (couldn't find file 'jquery-ui/effect-blind'
+  (in /home/phipn/Documents/book-rails4/app/assets/javascripts/application.js:14)):
+    3: <head>
+    4:   <title>Pragprog Books Online Store</title>
+    5:   <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body class="<%= controller.controller_name %>">
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___1619868541617309836_70269293157620'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (1.0ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (11.1ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-09 17:14:27 +0700
+Processing by StoreController#index as HTML
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "carts" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2018-05-09 10:14:27.288352"], ["updated_at", "2018-05-09 10:14:27.288352"]]
+  [1m[35m (55.7ms)[0m  commit transaction
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (1.3ms)
+Completed 500 Internal Server Error in 101ms
+
+ActionView::Template::Error (couldn't find file 'jquery-ui/effect-blind'
+  (in /home/phipn/Documents/book-rails4/app/assets/javascripts/application.js:14)):
+    3: <head>
+    4:   <title>Pragprog Books Online Store</title>
+    5:   <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body class="<%= controller.controller_name %>">
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___1619868541617309836_70269293157620'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.4ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (9.5ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-09 17:14:27 +0700
+Processing by StoreController#index as HTML
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO "carts" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2018-05-09 10:14:27.995976"], ["updated_at", "2018-05-09 10:14:27.995976"]]
+  [1m[36m (39.9ms)[0m  [1mcommit transaction[0m
+  [1m[35mProduct Load (0.2ms)[0m  SELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1
+  [1m[36mProduct Load (0.1ms)[0m  [1mSELECT "products".* FROM "products"   ORDER BY "products"."title" ASC[0m
+  Rendered store/index.html.erb within layouts/application (1.1ms)
+Completed 500 Internal Server Error in 79ms
+
+ActionView::Template::Error (couldn't find file 'jquery-ui/effect-blind'
+  (in /home/phipn/Documents/book-rails4/app/assets/javascripts/application.js:14)):
+    3: <head>
+    4:   <title>Pragprog Books Online Store</title>
+    5:   <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body class="<%= controller.controller_name %>">
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___1619868541617309836_70269293157620'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.1ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (10.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-09 17:24:25 +0700
+Processing by StoreController#index as HTML
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36mSQL (0.1ms)[0m  [1mINSERT INTO "carts" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2018-05-09 10:24:25.857412"], ["updated_at", "2018-05-09 10:24:25.857412"]]
+  [1m[35m (52.7ms)[0m  commit transaction
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (0.8ms)
+  [1m[36mLineItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "line_items"  WHERE "line_items"."cart_id" = ? LIMIT 1[0m  [["cart_id", 6]]
+  [1m[35mLineItem Load (0.1ms)[0m  SELECT "line_items".* FROM "line_items"  WHERE "line_items"."cart_id" = ?  [["cart_id", 6]]
+  Rendered collection (0.0ms)
+  Rendered carts/_cart.html.erb (7.4ms)
+Completed 200 OK in 944ms (Views: 888.4ms | ActiveRecord: 53.7ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/version.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/effect.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-blind.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/data.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/disable-selection.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/focusable.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/form.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:26 +0700
+
+
+Started GET "/assets/jquery-ui/ie.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/keycode.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/escape-selector.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/labels.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/jquery-1-7.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/plugin.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/safe-active-element.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/safe-blur.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/scroll-parent.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/tabbable.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/unique-id.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/core.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/form-reset-mixin.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/position.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widget.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-bounce.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-clip.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-drop.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-explode.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-fade.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-fold.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-highlight.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-size.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-scale.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-puff.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-pulsate.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-shake.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-slide.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-transfer.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/accordion.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/menu.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/autocomplete.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/controlgroup.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/checkboxradio.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/button.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/datepicker.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/mouse.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/draggable.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/resizable.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/dialog.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/droppable.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/progressbar.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/selectable.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/selectmenu.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/slider.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/sortable.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/spinner.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/tabs.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/tooltip.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/jquery-ui.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-09 17:24:27 +0700
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+Processing by ProductsController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1mSELECT  "users".* FROM "users"  WHERE "users"."id" IS NULL LIMIT 1[0m
+Redirected to http://localhost:3000/login
+Filter chain halted as :authorize rendered or redirected
+Completed 302 Found in 5ms (ActiveRecord: 0.1ms)
+
+
+Started GET "/login" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+Processing by SessionsController#new as HTML
+  Rendered sessions/new.html.erb within layouts/application (1.9ms)
+Completed 200 OK in 163ms (Views: 162.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-09 17:24:48 +0700
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:07:08 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by StoreController#index as HTML
+  [1m[35m (0.0ms)[0m  begin transaction
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO "carts" ("created_at", "updated_at") VALUES (?, ?)[0m  [["created_at", "2018-05-11 02:07:08.292150"], ["updated_at", "2018-05-11 02:07:08.292150"]]
+  [1m[35m (81.6ms)[0m  commit transaction
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (2.6ms)
+  [1m[36mLineItem Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "line_items"  WHERE "line_items"."cart_id" = ? LIMIT 1[0m  [["cart_id", 7]]
+  [1m[35mLineItem Load (0.4ms)[0m  SELECT "line_items".* FROM "line_items"  WHERE "line_items"."cart_id" = ?  [["cart_id", 7]]
+  Rendered collection (0.0ms)
+  Rendered carts/_cart.html.erb (33.8ms)
+Completed 200 OK in 858ms (Views: 733.4ms | ActiveRecord: 83.1ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/version.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effect.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-blind.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/data.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/disable-selection.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/focusable.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/form.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/ie.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/keycode.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/escape-selector.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/labels.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/jquery-1-7.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/plugin.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/safe-active-element.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/safe-blur.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/scroll-parent.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/tabbable.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/unique-id.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/core.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/form-reset-mixin.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/position.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/widget.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-bounce.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-clip.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-drop.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-explode.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-fade.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-fold.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-highlight.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-size.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-scale.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-puff.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-pulsate.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-shake.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-slide.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/effects/effect-transfer.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/accordion.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/menu.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/autocomplete.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:09 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/controlgroup.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/checkboxradio.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/button.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/datepicker.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/mouse.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/draggable.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/resizable.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/dialog.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/droppable.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/progressbar.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/selectable.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/selectmenu.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/slider.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/sortable.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/spinner.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/tabs.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui/widgets/tooltip.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/jquery-ui.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:07:10 +0700
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:14:38 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by Rails::WelcomeController#index as HTML
+  Rendered /var/lib/gems/2.3.0/gems/railties-4.1.8/lib/rails/templates/rails/welcome/index.html.erb (2.4ms)
+Completed 200 OK in 29ms (Views: 19.5ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:14:42 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendered /var/lib/gems/2.3.0/gems/railties-4.1.8/lib/rails/templates/rails/welcome/index.html.erb (0.1ms)
+Completed 200 OK in 2ms (Views: 1.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:14:43 +0700
+Processing by Rails::WelcomeController#index as HTML
+  Rendered /var/lib/gems/2.3.0/gems/railties-4.1.8/lib/rails/templates/rails/welcome/index.html.erb (0.1ms)
+Completed 200 OK in 1ms (Views: 1.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:14:45 +0700
+Processing by ProductsController#index as HTML
+  [1m[35mProduct Load (0.2ms)[0m  SELECT "products".* FROM "products"
+  Rendered products/index.html.erb within layouts/application (1.5ms)
+Completed 500 Internal Server Error in 106ms
+
+ActionView::Template::Error (/home/phipn/Documents/book-rails4/app/assets/stylesheets/application.css has already been required):
+    2: <html>
+    3: <head>
+    4:   <title>Depot</title>
+    5:   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+  app/views/layouts/application.html.erb:5:in `_app_views_layouts_application_html_erb__3886816600442058503_70257853577840'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.0ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (12.0ms)
+
+
+Started GET "/pro" for 127.0.0.1 at 2018-05-11 09:14:46 +0700
+
+ActionController::RoutingError (No route matches [GET] "/pro"):
+  actionpack (4.1.8) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.1.8) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.1.8) lib/active_support/cache/strategy/local_cache_middleware.rb:26:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/static.rb:84:in `call'
+  rack (1.5.5) lib/rack/sendfile.rb:112:in `call'
+  railties (4.1.8) lib/rails/engine.rb:514:in `call'
+  railties (4.1.8) lib/rails/application.rb:144:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  rack (1.5.5) lib/rack/content_length.rb:14:in `call'
+  rack (1.5.5) lib/rack/handler/webrick.rb:60:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:140:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:96:in `run'
+  /usr/lib/ruby/2.3.0/webrick/server.rb:296:in `block in start_thread'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (0.6ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_route.html.erb (1.1ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_table.html.erb (66.6ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (92.9ms)
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+[0m
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:17:35 +0700
+Processing by ProductsController#index as HTML
+  [1m[36mProduct Load (0.3ms)[0m  [1mSELECT "products".* FROM "products"[0m
+  Rendered products/index.html.erb within layouts/application (0.8ms)
+Completed 500 Internal Server Error in 17ms
+
+ActionView::Template::Error (/home/phipn/Documents/book-rails4/app/assets/stylesheets/application.css has already been required):
+    2: <html>
+    3: <head>
+    4:   <title>Depot</title>
+    5:   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+  app/views/layouts/application.html.erb:5:in `_app_views_layouts_application_html_erb__3886816600442058503_70257853577840'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (0.8ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.6ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (7.5ms)
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:17:36 +0700
+Processing by ProductsController#index as HTML
+  [1m[35mProduct Load (0.3ms)[0m  SELECT "products".* FROM "products"
+  Rendered products/index.html.erb within layouts/application (0.9ms)
+Completed 500 Internal Server Error in 17ms
+
+ActionView::Template::Error (/home/phipn/Documents/book-rails4/app/assets/stylesheets/application.css has already been required):
+    2: <html>
+    3: <head>
+    4:   <title>Depot</title>
+    5:   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+  app/views/layouts/application.html.erb:5:in `_app_views_layouts_application_html_erb__3886816600442058503_70257853577840'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (2.2ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (1.3ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (10.0ms)
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:17:37 +0700
+Processing by ProductsController#index as HTML
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT "products".* FROM "products"[0m
+  Rendered products/index.html.erb within layouts/application (0.8ms)
+Completed 500 Internal Server Error in 19ms
+
+ActionView::Template::Error (/home/phipn/Documents/book-rails4/app/assets/stylesheets/application.css has already been required):
+    2: <html>
+    3: <head>
+    4:   <title>Depot</title>
+    5:   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    6:   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+  app/views/layouts/application.html.erb:5:in `_app_views_layouts_application_html_erb__3886816600442058503_70257853577840'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.4ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_request_and_response.html.erb (0.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/template_error.html.erb within rescues/layout (9.9ms)
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+Processing by ProductsController#index as HTML
+  [1m[35mProduct Load (0.2ms)[0m  SELECT "products".* FROM "products"
+  Rendered products/index.html.erb within layouts/application (0.8ms)
+Completed 200 OK in 144ms (Views: 143.4ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:18:48 +0700
+
+
+Started GET "/products/new" for 127.0.0.1 at 2018-05-11 09:18:50 +0700
+Processing by ProductsController#new as HTML
+  Rendered products/_form.html.erb (33.1ms)
+  Rendered products/new.html.erb within layouts/application (34.2ms)
+Completed 200 OK in 94ms (Views: 92.2ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/products/new" for 127.0.0.1 at 2018-05-11 09:30:56 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by ProductsController#new as HTML
+  Rendered products/_form.html.erb (12.8ms)
+  Rendered products/new.html.erb within layouts/application (15.4ms)
+Completed 200 OK in 327ms (Views: 318.7ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:30:57 +0700
+
+
+Started GET "/store" for 127.0.0.1 at 2018-05-11 09:33:55 +0700
+
+ActionController::RoutingError (No route matches [GET] "/store"):
+  actionpack (4.1.8) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.1.8) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.1.8) lib/active_support/cache/strategy/local_cache_middleware.rb:26:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/static.rb:84:in `call'
+  rack (1.5.5) lib/rack/sendfile.rb:112:in `call'
+  railties (4.1.8) lib/rails/engine.rb:514:in `call'
+  railties (4.1.8) lib/rails/application.rb:144:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  rack (1.5.5) lib/rack/content_length.rb:14:in `call'
+  rack (1.5.5) lib/rack/handler/webrick.rb:60:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:140:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:96:in `run'
+  /usr/lib/ruby/2.3.0/webrick/server.rb:296:in `block in start_thread'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.1ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_route.html.erb (1.2ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_table.html.erb (1.0ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (13.5ms)
+
+
+Started GET "/stores" for 127.0.0.1 at 2018-05-11 09:33:59 +0700
+
+ActionController::RoutingError (No route matches [GET] "/stores"):
+  actionpack (4.1.8) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.1.8) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.1.8) lib/active_support/cache/strategy/local_cache_middleware.rb:26:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/static.rb:84:in `call'
+  rack (1.5.5) lib/rack/sendfile.rb:112:in `call'
+  railties (4.1.8) lib/rails/engine.rb:514:in `call'
+  railties (4.1.8) lib/rails/application.rb:144:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  rack (1.5.5) lib/rack/content_length.rb:14:in `call'
+  rack (1.5.5) lib/rack/handler/webrick.rb:60:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:140:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:96:in `run'
+  /usr/lib/ruby/2.3.0/webrick/server.rb:296:in `block in start_thread'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (0.6ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_route.html.erb (2.0ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_table.html.erb (0.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (13.8ms)
+
+
+Started GET "/store" for 127.0.0.1 at 2018-05-11 09:34:18 +0700
+
+ActionController::RoutingError (No route matches [GET] "/store"):
+  actionpack (4.1.8) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.1.8) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.1.8) lib/active_support/cache/strategy/local_cache_middleware.rb:26:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/static.rb:84:in `call'
+  rack (1.5.5) lib/rack/sendfile.rb:112:in `call'
+  railties (4.1.8) lib/rails/engine.rb:514:in `call'
+  railties (4.1.8) lib/rails/application.rb:144:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  rack (1.5.5) lib/rack/content_length.rb:14:in `call'
+  rack (1.5.5) lib/rack/handler/webrick.rb:60:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:140:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:96:in `run'
+  /usr/lib/ruby/2.3.0/webrick/server.rb:296:in `block in start_thread'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_route.html.erb (1.0ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_table.html.erb (0.7ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (14.6ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+Processing by StoreController#index as HTML
+  [1m[35mProduct Load (0.2ms)[0m  SELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1
+  [1m[36mProduct Load (0.1ms)[0m  [1mSELECT "products".* FROM "products"   ORDER BY "products"."title" ASC[0m
+  Rendered store/index.html.erb within layouts/application (2.9ms)
+Completed 200 OK in 61ms (Views: 59.8ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:34:23 +0700
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+Processing by ProductsController#index as HTML
+  [1m[35mProduct Load (0.2ms)[0m  SELECT "products".* FROM "products"
+  Rendered products/index.html.erb within layouts/application (2.1ms)
+Completed 200 OK in 58ms (Views: 56.9ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:35:56 +0700
+
+
+Started GET "/products/new" for 127.0.0.1 at 2018-05-11 09:35:58 +0700
+Processing by ProductsController#new as HTML
+  Rendered products/_form.html.erb (2.7ms)
+  Rendered products/new.html.erb within layouts/application (3.2ms)
+Completed 200 OK in 59ms (Views: 58.2ms | ActiveRecord: 0.0ms)
+
+
+Started POST "/products" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+Processing by ProductsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"LLjAk4440d4bj9nWSWrQ9hh3/YhxurzGNGP7cgGT0qA=", "product"=>{"title"=>"dasd", "description"=>"asdsa", "image_url"=>"asd", "price"=>"ads"}, "commit"=>"Create Product"}
+  [1m[36m (0.1ms)[0m  [1mbegin transaction[0m
+  [1m[35mProduct Exists (0.1ms)[0m  SELECT  1 AS one FROM "products"  WHERE "products"."title" = 'dasd' LIMIT 1
+  [1m[36m (0.0ms)[0m  [1mrollback transaction[0m
+  Rendered products/_form.html.erb (3.6ms)
+  Rendered products/new.html.erb within layouts/application (4.1ms)
+Completed 200 OK in 71ms (Views: 61.5ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:36:04 +0700
+
+
+Started GET "/home" for 127.0.0.1 at 2018-05-11 09:37:44 +0700
+
+ActionController::RoutingError (No route matches [GET] "/home"):
+  actionpack (4.1.8) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.1.8) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.1.8) lib/active_support/cache/strategy/local_cache_middleware.rb:26:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/static.rb:84:in `call'
+  rack (1.5.5) lib/rack/sendfile.rb:112:in `call'
+  railties (4.1.8) lib/rails/engine.rb:514:in `call'
+  railties (4.1.8) lib/rails/application.rb:144:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  rack (1.5.5) lib/rack/content_length.rb:14:in `call'
+  rack (1.5.5) lib/rack/handler/webrick.rb:60:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:140:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:96:in `run'
+  /usr/lib/ruby/2.3.0/webrick/server.rb:296:in `block in start_thread'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (0.6ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_route.html.erb (1.9ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_table.html.erb (0.9ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (13.3ms)
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:37:46 +0700
+Processing by ProductsController#index as HTML
+  [1m[35mProduct Load (0.3ms)[0m  SELECT "products".* FROM "products"
+  Rendered products/index.html.erb within layouts/application (1.2ms)
+Completed 200 OK in 72ms (Views: 71.3ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.1ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.2ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 57ms (Views: 56.4ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:38:18 +0700
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 54ms (Views: 53.7ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:50:20 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.1ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+[0m
+  [1m[35m (0.1ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+
+  [1m[36m (0.1ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+[0m
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.3ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (1.1ms)
+Completed 200 OK in 63ms (Views: 60.9ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:39 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.4ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.2ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (1.6ms)
+Completed 200 OK in 55ms (Views: 54.1ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:53:40 +0700
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+Processing by ProductsController#index as HTML
+  [1m[36mProduct Load (0.1ms)[0m  [1mSELECT "products".* FROM "products"[0m
+  Rendered products/index.html.erb within layouts/application (0.7ms)
+Completed 200 OK in 60ms (Views: 59.5ms | ActiveRecord: 0.1ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:55:16 +0700
+
+
+Started GET "/products/new" for 127.0.0.1 at 2018-05-11 09:55:19 +0700
+Processing by ProductsController#new as HTML
+  Rendered products/_form.html.erb (7.1ms)
+  Rendered products/new.html.erb within layouts/application (8.1ms)
+Completed 200 OK in 58ms (Views: 57.0ms | ActiveRecord: 0.3ms)
+
+
+Started POST "/products" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+Processing by ProductsController#create as HTML
+  Parameters: {"utf8"=>"✓", "authenticity_token"=>"LLjAk4440d4bj9nWSWrQ9hh3/YhxurzGNGP7cgGT0qA=", "product"=>{"title"=>"Ruby", "description"=>"Ruby On Rails", "image_url"=>"ruby.jpg", "price"=>"100"}, "commit"=>"Create Product"}
+  [1m[35m (0.1ms)[0m  begin transaction
+  [1m[36mProduct Exists (0.1ms)[0m  [1mSELECT  1 AS one FROM "products"  WHERE "products"."title" = 'Ruby' LIMIT 1[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "products" ("created_at", "description", "image_url", "price", "title", "updated_at") VALUES (?, ?, ?, ?, ?, ?)  [["created_at", "2018-05-11 02:55:44.152717"], ["description", "Ruby On Rails"], ["image_url", "ruby.jpg"], ["price", 100.0], ["title", "Ruby"], ["updated_at", "2018-05-11 02:55:44.152717"]]
+  [1m[36m (151.9ms)[0m  [1mcommit transaction[0m
+Redirected to http://localhost:3000/products/1
+Completed 302 Found in 160ms (ActiveRecord: 152.4ms)
+
+
+Started GET "/products/1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+Processing by ProductsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[35mProduct Load (0.2ms)[0m  SELECT  "products".* FROM "products"  WHERE "products"."id" = ? LIMIT 1  [["id", 1]]
+  Rendered products/show.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 56ms (Views: 54.3ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:55:44 +0700
+
+
+Started GET "/products" for 127.0.0.1 at 2018-05-11 09:55:48 +0700
+Processing by ProductsController#index as HTML
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT "products".* FROM "products"[0m
+  Rendered products/index.html.erb within layouts/application (20.8ms)
+Completed 200 OK in 69ms (Views: 67.8ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/ruby.jpg" for 127.0.0.1 at 2018-05-11 09:55:48 +0700
+
+
+Started GET "/products/1" for 127.0.0.1 at 2018-05-11 09:55:53 +0700
+Processing by ProductsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[35mProduct Load (0.2ms)[0m  SELECT  "products".* FROM "products"  WHERE "products"."id" = ? LIMIT 1  [["id", 1]]
+  Rendered products/show.html.erb within layouts/application (0.3ms)
+Completed 200 OK in 59ms (Views: 56.7ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.1ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (3.7ms)
+Completed 200 OK in 55ms (Views: 54.1ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:56:06 +0700
+
+
+Started GET "/public/" for 127.0.0.1 at 2018-05-11 09:56:35 +0700
+
+ActionController::RoutingError (No route matches [GET] "/public"):
+  actionpack (4.1.8) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/show_exceptions.rb:30:in `call'
+  railties (4.1.8) lib/rails/rack/logger.rb:38:in `call_app'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `block in call'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `block in tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:26:in `tagged'
+  activesupport (4.1.8) lib/active_support/tagged_logging.rb:68:in `tagged'
+  railties (4.1.8) lib/rails/rack/logger.rb:20:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/request_id.rb:21:in `call'
+  rack (1.5.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.5.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (4.1.8) lib/active_support/cache/strategy/local_cache_middleware.rb:26:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  actionpack (4.1.8) lib/action_dispatch/middleware/static.rb:84:in `call'
+  rack (1.5.5) lib/rack/sendfile.rb:112:in `call'
+  railties (4.1.8) lib/rails/engine.rb:514:in `call'
+  railties (4.1.8) lib/rails/application.rb:144:in `call'
+  rack (1.5.5) lib/rack/lock.rb:17:in `call'
+  rack (1.5.5) lib/rack/content_length.rb:14:in `call'
+  rack (1.5.5) lib/rack/handler/webrick.rb:60:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:140:in `service'
+  /usr/lib/ruby/2.3.0/webrick/httpserver.rb:96:in `run'
+  /usr/lib/ruby/2.3.0/webrick/server.rb:296:in `block in start_thread'
+
+
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/_trace.html.erb (1.0ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_route.html.erb (1.4ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/routes/_table.html.erb (1.5ms)
+  Rendered /var/lib/gems/2.3.0/gems/actionpack-4.1.8/lib/action_dispatch/middleware/templates/rescues/routing_error.html.erb within rescues/layout (15.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:57:03 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.3ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.2ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 59ms (Views: 58.2ms | ActiveRecord: 0.4ms)
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 09:57:04 +0700
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:57:06 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.2ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (1.7ms)
+Completed 200 OK in 60ms (Views: 59.0ms | ActiveRecord: 0.3ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:57:08 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.1ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.1ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (1.4ms)
+Completed 200 OK in 55ms (Views: 54.6ms | ActiveRecord: 0.2ms)
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 09:58:46 +0700
+Processing by StoreController#index as HTML
+  [1m[36mProduct Load (0.3ms)[0m  [1mSELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1[0m
+  [1m[35mProduct Load (0.2ms)[0m  SELECT "products".* FROM "products"   ORDER BY "products"."title" ASC
+  Rendered store/index.html.erb within layouts/application (2.4ms)
+Completed 200 OK in 71ms (Views: 70.4ms | ActiveRecord: 0.5ms)
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.2ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.3ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_order_id' AND type='index'
+[0m
+  [1m[35m (0.2ms)[0m              SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_cart_id' AND type='index'
+
+  [1m[36m (0.2ms)[0m  [1m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_line_items_on_product_id' AND type='index'
+[0m
+
+
+Started GET "/" for 127.0.0.1 at 2018-05-11 10:09:16 +0700
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Processing by StoreController#index as HTML
+  [1m[35mProduct Load (0.3ms)[0m  SELECT  "products".* FROM "products"   ORDER BY "products"."updated_at" DESC LIMIT 1
+  [1m[36mProduct Load (0.3ms)[0m  [1mSELECT "products".* FROM "products"   ORDER BY "products"."title" ASC[0m
+  Rendered store/index.html.erb within layouts/application (21.2ms)
+Completed 200 OK in 203ms (Views: 188.3ms | ActiveRecord: 2.0ms)
+
+
+Started GET "/assets/carts.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/orders.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/line_items.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/admin.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/scaffolds.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/products.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/sessions.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/store.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/users.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/turbolinks.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/admin.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/carts.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/line_items.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/orders.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/products.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/sessions.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/store.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/users.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/logo.png" for 127.0.0.1 at 2018-05-11 10:09:17 +0700
+
+
+Started GET "/assets/ruby.jpg" for 127.0.0.1 at 2018-05-11 10:09:17 +0700

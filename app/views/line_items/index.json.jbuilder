@@ -1,1 +1,4 @@
-json.array! @line_items, partial: 'line_items/line_item', as: :line_item
+json.array!(@line_items) do |line_item|
+  json.extract! line_item, :id, :product_id, :cart_id
+  json.url line_item_url(line_item, format: :json)
+end

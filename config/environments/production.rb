@@ -82,8 +82,8 @@ Rails.application.configure do
     address:              'smtp.gmail.com',
     port:                 25,
     domain:               'sheltered-tundra-91435.herokuapp.com',
-    user_name:            ENV["phipn97@gmail.com"],
-    password:             ENV["pozdien123"],
+    user_name:            'phipn97@gmail.com',
+    password:             'pozdien123',
     authentication:       'plain',
     enable_starttls_auto: true
   }

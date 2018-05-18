@@ -39,9 +39,9 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address:              'smtp.gmail.com',
     port:                 25,
-    domain:               'sheltered-tundra-91435.herokuapp.com',
-    user_name:            'gikizay@gmail.com',
-    password:             'kkyrxzhiamdfopbr',
+    domain:               'domain.of.sender.net',
+    user_name:            'dave',
+    password:             'secret',
     authentication:       'plain',
     enable_starttls_auto: true
   }
